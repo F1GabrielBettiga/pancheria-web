@@ -1,0 +1,180 @@
+/* Estilos Globales y Modo Oscuro */
+:root {
+    color-scheme: light dark;
+}
+
+.material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Usar svh (Short Viewport Height) para asegurar que el cuerpo respete las barras del navegador */
+    min-height: 100svh;
+}
+
+.dark body {
+    background-color: #0f1112;
+    color: #e1e3e4;
+}
+
+/* Modo oscuro */
+.dark .bg-background { background-color: #0f1112; }
+.dark .text-on-background { color: #e1e3e4; }
+.dark .bg-surface-container-lowest { background-color: #222526; }
+.dark .text-on-surface { color: #e1e3e4; }
+.dark .text-on-surface-variant { color: #a0a5a8; }
+.dark .border-outline-variant { border-color: #2d3133; }
+.dark .bg-surface-variant { background-color: #2a2e30; }
+.dark .bg-surface { background-color: #1a1d1e; }
+
+.dark input,
+.dark textarea {
+    color: #e1e3e4;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #6e7274;
+}
+
+.dark .peer-checked\:bg-white {
+    background-color: #2d3133 !important;
+}
+
+/* Botones y selectores del menú */
+.cart-btn-expand {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quantity-selector {
+    transform: scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.quantity-selector.active {
+    transform: scale(1);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.add-btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.add-btn.hidden-btn {
+    transform: scale(0.8);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Toast */
+@keyframes slideInUp {
+    from {
+        transform: translate(-50%, 100%);
+        opacity: 0;
+    }
+
+    to {
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+
+.toast-notification {
+    position: fixed;
+    /* Ajuste para que el toast no quede tapado por la navbar mobile */
+    bottom: calc(5rem + env(safe-area-inset-bottom) + 20px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 9999px;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: slideInUp 0.3s ease-out forwards;
+    pointer-events: none;
+}
+
+.dark .toast-notification {
+    background: #2a2e30;
+    border: 1px solid #404446;
+}
+
+.toast-fade-out {
+    animation: fadeOut 0.5s ease-in forwards;
+}
+
+/* Scrollbar modo oscuro */
+.dark ::-webkit-scrollbar {
+    width: 8px;
+}
+
+.dark ::-webkit-scrollbar-track {
+    background: #0f1112;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+    background: #2a2e30;
+    border-radius: 10px;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+    background: #404446;
+}
+
+/* Leaflet Dark Mode */
+.dark .leaflet-tile {
+    filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3);
+}
+
+.dark .leaflet-container {
+    background: #1a1d1e;
+}
+
+/* Estados */
+.text-success { color: #22c55e; }
+.bg-success\/10 { background-color: rgba(34, 197, 94, 0.1); }
+
+.text-error { color: #ef4444; }
+.bg-error\/10 { background-color: rgba(239, 68, 68, 0.1); }
+
+.text-warning { color: #f59e0b; }
+.bg-warning\/10 { background-color: rgba(245, 158, 11, 0.1); }
+
+/* Solución moderna para iOS Viewport y Safe Area */
+.mobile-bottom-nav {
+    /* Usar dvh (Dynamic Viewport Height) para acompañar el cambio de barras del navegador */
+    /* El valor de bottom: 0 se mantiene, pero la altura y el padding manejan el safe area */
+    padding-bottom: env(safe-area-inset-bottom);
+    height: calc(5rem + env(safe-area-inset-bottom));
+    /* Forzar hardware acceleration para evitar parpadeos en scroll */
+    transform: translateZ(0);
+}
+
+/* Ajuste preventivo para el padding del body en mobile */
+@supports (-webkit-touch-callout: none) {
+    html,
+    body {
+        background-color: #f8fafc;
+    }
+
+    .dark html,
+    .dark body {
+        background-color: #0f1112;
+    }
+}

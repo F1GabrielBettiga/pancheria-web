@@ -1,0 +1,51 @@
+body {
+    background-color: #F8F9FA;
+}
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: 'liga';
+    -webkit-font-smoothing: antialiased;
+}
+
+.bank-row {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 8px;
+    align-items: center;
+}
+
+.bank-label {
+    font-weight: 700;
+}
+
+.bank-copy-group {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 0;
+    word-break: break-all;
+}
+
+@media (max-width: 380px) {
+    .bank-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .bank-copy-group {
+        justify-content: space-between;
+        width: 100%;
+    }
+}

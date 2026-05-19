@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Panchería - Carrito de Compras</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="assets/js/configuracion-tailwind.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link crossorigin="" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" rel="stylesheet" />
+    <link href="assets/css/estilos.css" rel="stylesheet" />
+    <link href="assets/css/carrito.css" rel="stylesheet" />
+</head>
+
+<body
+    class="bg-background dark:bg-background-dark font-body-md text-on-background dark:text-on-background-dark pb-24 md:pb-0 min-h-screen flex flex-col">
+    <div id="navbar-contenedor"></div>
+
+    <main class="flex-grow max-w-screen-md mx-auto w-full px-container-margin pt-28 pb-lg md:pt-32 md:pb-xl"
+        id="main-content">
+
+        <div class="mb-lg" id="checkout-header">
+            <h1 class="font-h1 text-h1 text-on-surface">Finalizá tu pedido</h1>
+            <p class="font-body-md text-body-md text-on-surface-variant mt-sm">
+                Revisá tus productos, completá tus datos y mandanos el pedido por WhatsApp.
+            </p>
+        </div>
+
+        <div id="cart-content" style="display: none;">
+            <div class="space-y-md mb-xl" id="cart-items"></div>
+
+            <div class="flex justify-center mb-xl">
+                <a class="flex items-center gap-2 text-brand-red font-label-bold text-label-bold py-2 px-4 rounded-xl hover:bg-primary-fixed dark:hover:bg-red-900/20 transition-colors"
+                    href="index.html#menu">
+                    <span class="material-symbols-outlined text-[20px]">add_circle</span>
+                    Agregar más productos
+                </a>
+            </div>
+
+            <div
+                class="bg-surface-container-lowest dark:bg-slate-900/50 rounded-3xl shadow-sm p-lg mb-xl border border-transparent dark:border-slate-800">
+                <h2 class="font-h2 text-h2 text-on-surface mb-md">Tus Datos</h2>
+
+                <form class="space-y-md" id="checkout-form">
+                    <div>
+                        <label class="block font-label-bold text-label-bold text-on-surface-variant mb-sm"
+                            for="customer-name">Nombre *</label>
+                        <input
+                            class="w-full px-md py-3 rounded-xl border border-outline-variant dark:border-slate-700 bg-surface dark:bg-slate-800 focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors outline-none font-body-md text-body-md text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-slate-500"
+                            id="customer-name" placeholder="Tu nombre" required="" type="text" />
+                    </div>
+
+                    <div id="metodos-entrega-container">
+                        <label class="block font-label-bold text-label-bold text-on-surface-variant mb-sm">
+                            Método de entrega
+                        </label>
+
+                        <div
+                            class="flex flex-col sm:flex-row gap-2 bg-surface dark:bg-slate-800 p-1 rounded-2xl border border-outline-variant dark:border-slate-700">
+                            <label class="flex-1 cursor-pointer" id="label-retiro">
+                                <input class="peer sr-only" id="delivery-local" name="delivery" type="radio"
+                                    value="local" />
+                                <div
+                                    class="w-full text-center py-3 rounded-xl peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:shadow-sm peer-checked:text-brand-red text-on-surface-variant dark:text-slate-300 font-label-bold text-label-bold transition-all">
+                                    Retiro en Local
+                                </div>
+                            </label>
+
+                            <label class="flex-1 cursor-pointer" id="label-envio">
+                                <input class="peer sr-only" id="delivery-envio" name="delivery" type="radio"
+                                    value="envio" />
+                                <div
+                                    class="w-full text-center py-3 rounded-xl peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:shadow-sm peer-checked:text-brand-red text-on-surface-variant dark:text-slate-300 font-label-bold text-label-bold transition-all">
+                                    Envío a Domicilio
+                                </div>
+                            </label>
+
+                            <label class="flex-1 cursor-pointer" id="label-mesa">
+                                <input class="peer sr-only" id="delivery-mesa" name="delivery" type="radio"
+                                    value="mesa" />
+                                <div
+                                    class="w-full text-center py-3 rounded-xl peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:shadow-sm peer-checked:text-brand-red text-on-surface-variant dark:text-slate-300 font-label-bold text-label-bold transition-all">
+                                    En mesa
+                                </div>
+                            </label>
+                        </div>
+
+                        <p class="font-caption text-caption text-on-surface-variant mt-sm" id="delivery-message"></p>
+                    </div>
+
+                    <div class="mt-md pt-sm" id="metodos-pago-container">
+                        <label class="block font-label-bold text-label-bold text-on-surface-variant mb-sm">
+                            Forma de pago
+                        </label>
+
+                        <div
+                            class="flex flex-col sm:flex-row gap-2 bg-surface dark:bg-slate-800 p-1 rounded-2xl border border-outline-variant dark:border-slate-700">
+                            <label class="flex-1 cursor-pointer" id="label-efectivo">
+                                <input class="peer sr-only" id="payment-efectivo" name="payment" type="radio"
+                                    value="efectivo" />
+                                <div
+                                    class="w-full text-center py-3 rounded-xl peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:shadow-sm peer-checked:text-brand-red text-on-surface-variant dark:text-slate-300 font-label-bold text-label-bold transition-all">
+                                    Efectivo
+                                </div>
+                            </label>
+
+                            <label class="flex-1 cursor-pointer" id="label-transferencia">
+                                <input class="peer sr-only" id="payment-transferencia" name="payment" type="radio"
+                                    value="transferencia" />
+                                <div
+                                    class="w-full text-center py-3 rounded-xl peer-checked:bg-white dark:peer-checked:bg-slate-700 peer-checked:shadow-sm peer-checked:text-brand-red text-on-surface-variant dark:text-slate-300 font-label-bold text-label-bold transition-all">
+                                    Transferencia
+                                </div>
+                            </label>
+                        </div>
+
+                        <div class="mt-4 p-md bg-surface-variant dark:bg-slate-800 rounded-xl border border-outline-variant dark:border-slate-700"
+                            id="bank-details" style="display: none;">
+                            <h4 class="font-label-bold text-label-bold text-on-surface mb-3">Datos Bancarios</h4>
+
+                            <div class="space-y-3 font-body-md text-sm text-on-surface-variant dark:text-slate-300">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold">Banco:</span>
+                                    <span id="bank-name"></span>
+                                </div>
+
+                                <div class="flex justify-between items-center">
+                                    <span class="font-bold">Titular:</span>
+                                    <span id="bank-owner"></span>
+                                </div>
+
+                                <div class="bank-row">
+                                    <span class="bank-label">Alias:</span>
+
+                                    <div class="bank-copy-group">
+                                        <span class="font-mono break-all" id="bank-alias"></span>
+
+                                        <button
+                                            class="text-brand-red hover:bg-brand-red/10 p-1 rounded-md transition-colors flex items-center justify-center shrink-0"
+                                            id="btn-copy-alias" title="Copiar Alias" type="button">
+                                            <span class="material-symbols-outlined text-[18px]">
+                                                content_copy
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="bank-row">
+                                    <span class="bank-label">CBU/CVU:</span>
+
+                                    <div class="bank-copy-group">
+                                        <span class="font-mono break-all" id="bank-cbu"></span>
+
+                                        <button
+                                            class="text-brand-red hover:bg-brand-red/10 p-1 rounded-md transition-colors flex items-center justify-center shrink-0"
+                                            id="btn-copy-cbu" title="Copiar CBU/CVU" type="button">
+                                            <span class="material-symbols-outlined text-[18px]">
+                                                content_copy
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-sm mt-md space-y-md" id="address-fields" style="display: none;">
+                        <div>
+                            <label class="block font-label-bold text-label-bold text-on-surface-variant mb-sm"
+                                for="customer-address">
+                                Dirección de Envío *
+                            </label>
+
+                            <input
+                                class="w-full px-md py-3 rounded-xl border border-outline-variant dark:border-slate-700 bg-surface dark:bg-slate-800 focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors outline-none font-body-md text-body-md text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-slate-500"
+                                id="customer-address" placeholder="Calle y número, Ciudad" type="text" />
+
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 ml-1">
+                                Ejemplo: Olegario Victor Andrade 334, General Pacheco
+                            </p>
+
+                            <p
+                                class="text-xs text-amber-600 dark:text-amber-400 mt-4 ml-1 flex items-start gap-1 leading-relaxed">
+                                <span class="material-symbols-outlined text-[14px] mt-[1px]">info</span>
+                                <span>
+                                    Si la ubicación en el mapa no coincide con tu dirección,
+                                    seleccioná manualmente el punto exacto tocando el mapa.
+                                </span>
+                            </p>
+
+                            <div class="mt-4 relative w-full h-[250px] rounded-2xl overflow-hidden border border-outline-variant dark:border-slate-700 bg-surface-variant dark:bg-slate-800"
+                                id="map-container">
+                                <div class="w-full h-full z-10" id="map"></div>
+                                <div class="absolute bottom-0 left-0 right-0 z-20 bg-black/60 text-white text-[10px] px-2 py-1 pointer-events-none"
+                                    id="map-status">
+                                </div>
+                            </div>
+
+                            <div class="p-md rounded-xl font-label-bold text-label-bold hidden"
+                                id="shipping-status-message"></div>
+
+                            <textarea
+                                class="mt-4 w-full px-md py-3 rounded-xl border border-outline-variant dark:border-slate-700 bg-surface dark:bg-slate-800 focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors outline-none font-body-md text-body-md text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-slate-500 resize-none"
+                                id="customer-details" placeholder="Detalles adicionales (timbre, piso, etc.)"
+                                rows="2"></textarea>
+                        </div>
+                    </div>
+                </form>
+
+                <!-- Sección de Cupón -->
+                <div id="coupon-section" class="mt-lg pt-lg border-t border-surface-variant dark:border-slate-800"
+                    style="display: none;">
+                    <h3 class="font-h3 text-h3 text-on-surface mb-md">Cupón de descuento</h3>
+
+                    <div class="flex gap-2">
+                        <input type="text" id="coupon-code"
+                            class="flex-1 px-md py-3 rounded-xl border border-outline-variant dark:border-slate-700 bg-surface dark:bg-slate-800 focus:border-brand-red focus:ring-1 focus:ring-brand-red transition-colors outline-none font-body-md text-body-md text-on-surface dark:text-white placeholder:text-on-surface-variant dark:placeholder:text-slate-500"
+                            placeholder="Ingresá tu código">
+
+                        <button id="btn-apply-coupon"
+                            class="bg-brand-red text-white font-label-bold text-label-bold px-md py-3 rounded-xl shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                            Aplicar
+                        </button>
+                    </div>
+
+                    <div id="applied-coupon-info"
+                        class="mt-3 flex items-center justify-between bg-success/10 text-success p-3 rounded-xl hidden">
+                        <span id="applied-coupon-text" class="font-label-bold"></span>
+
+                        <button id="btn-remove-coupon" class="text-error font-label-bold hover:underline">
+                            Quitar
+                        </button>
+                    </div>
+
+                    <p id="coupon-message" class="mt-2 text-sm font-medium hidden"></p>
+                </div>
+
+                <div
+                    class="mt-lg pt-lg border-t border-surface-variant dark:border-slate-800 space-y-sm bg-surface dark:bg-slate-800/50 rounded-2xl p-md">
+                    <h3 class="font-h3 text-h3 text-on-surface mb-sm">Resumen</h3>
+
+                    <div class="flex justify-between font-body-md text-body-md text-on-surface-variant">
+                        <span>Subtotal</span>
+                        <span id="summary-subtotal">$ 0</span>
+                    </div>
+
+                    <div id="summary-coupon-container"
+                        class="flex justify-between font-body-md text-body-md text-success"
+                        style="display: none;">
+                        <span id="summary-coupon-label">Cupón</span>
+                        <span id="summary-coupon-value">-$ 0</span>
+                    </div>
+
+                    <div class="flex justify-between font-body-md text-body-md text-on-surface-variant"
+                        id="summary-shipping-container" style="display: none;">
+                        <span>Costo de Envío</span>
+                        <span class="text-sm italic" id="summary-shipping-cost">Pendiente</span>
+                    </div>
+
+                    <div class="flex justify-between font-body-md text-body-md text-on-surface-variant"
+                        id="summary-adjustment-container" style="display: none;">
+                        <span id="summary-adjustment-label">Ajuste por forma de pago</span>
+                        <span id="summary-adjustment-value">$ 0</span>
+                    </div>
+
+                    <div
+                        class="flex justify-between font-h2 text-h2 text-on-surface mt-md pt-sm border-t border-surface-variant dark:border-slate-800">
+                        <span id="summary-total-label">Total</span>
+                        <span class="text-brand-red" id="summary-total">$ 0</span>
+                    </div>
+                </div>
+
+                <div class="mt-lg space-y-md">
+                    <button
+                        class="w-full bg-brand-red text-white font-label-bold text-label-bold py-4 rounded-2xl shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                        id="btn-checkout">
+                        <span class="material-symbols-outlined">send</span>
+                        Enviar pedido por WhatsApp
+                    </button>
+
+                    <button
+                        class="w-full bg-transparent text-on-surface-variant font-label-bold text-label-bold py-4 rounded-2xl hover:bg-surface-variant dark:hover:bg-slate-800 active:scale-95 transition-all"
+                        id="btn-cancel">
+                        Cancelar pedido
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center py-xl" id="empty-cart" style="display: none;">
+            <span class="material-symbols-outlined text-[64px] text-surface-variant mb-4">shopping_cart</span>
+            <h2 class="font-h2 text-h2 text-on-surface mb-2">Tu carrito está vacío</h2>
+            <p class="font-body-md text-body-md text-on-surface-variant mb-lg">
+                ¿Listo para pedir los mejores panchos?
+            </p>
+            <a class="inline-flex bg-brand-red text-white font-label-bold text-label-bold px-lg py-4 rounded-2xl hover:opacity-90 active:scale-95 transition-all"
+                href="index.html#menu">
+                Volver al menú
+            </a>
+        </div>
+    </main>
+
+    <footer
+        class="bg-surface-container dark:bg-slate-900 py-lg mt-xl border-t border-outline-variant/20 dark:border-slate-800">
+        <div
+            class="max-w-screen-xl mx-auto px-container-margin flex flex-col items-center justify-center text-on-surface-variant dark:text-slate-400">
+            <span class="material-symbols-outlined text-[32px] mb-sm">
+                photo_camera
+            </span>
+            <p class="font-label-bold text-label-bold">
+                Seguinos en Instagram
+            </p>
+            <a class="font-caption text-caption mt-xs opacity-70 hover:text-primary dark:hover:text-brand-red transition-colors"
+                href="#" id="instagram-link" target="_blank">
+                @instagram
+            </a>
+        </div>
+    </footer>
+
+    <script src="assets/js/configuracionLocal.js"></script>
+    <script src="assets/js/tema.js"></script>
+    <script src="assets/js/articulos.js"></script>
+    <script src="assets/js/navbar.js"></script>
+    <script src="assets/js/carrito.js"></script>
+    <script crossorigin="" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="assets/js/calculoEnvio.js"></script>
+    <script src="assets/js/modalExtras.js"></script>
+    <script src="assets/js/horarioLocal.js"></script>
+</body>
+
+</html>
