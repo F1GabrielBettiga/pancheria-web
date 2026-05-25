@@ -215,6 +215,17 @@ const confirmarExtras = () => {
         }
     });
 
+
+    if (productoActualParaExtras.requiereSeleccion && extrasParaCarrito.length === 0) {
+        mostrarAviso({
+            titulo: "Falta seleccionar una opción",
+            mensaje: `Tenés que elegir al menos una opción para ${productoActualParaExtras.nombre}.`,
+            tipo: "warning",
+            textoBoton: "Entendido"
+        });
+        return;
+    }
+
     if (window.cartItemToReplace) {
         const itemExistente = carrito.find(i => i.cartId === window.cartItemToReplace);
 

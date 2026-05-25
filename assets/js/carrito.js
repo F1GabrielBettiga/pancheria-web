@@ -439,7 +439,12 @@ const copiarConFallback = (texto, callback) => {
         document.execCommand('copy');
         callback();
     } catch (error) {
-        alert('No se pudo copiar. Mantené presionado el texto para copiarlo manualmente.');
+        mostrarAviso({
+            titulo: "No se pudo copiar",
+            mensaje: "Mantené presionado el texto para copiarlo manualmente.",
+            tipo: "warning",
+            textoBoton: "Entendido"
+        });
     }
 
     document.body.removeChild(inputTemporal);
@@ -837,8 +842,32 @@ const removeItem = (cartId) => {
 const checkout = () => {
     cargarCarrito();
 
+    // Validación extra antes de enviar el pedido por WhatsApp
+    // Evita que productos con requiereSeleccion: true salgan sin opción seleccionada
+    const itemSinSeleccionObligatoria = carrito.find(item => {
+        const productoBase = productos.find(p => p.id === item.id);
+
+        return productoBase?.requiereSeleccion &&
+            (!item.extras || item.extras.length === 0);
+    });
+
+    if (itemSinSeleccionObligatoria) {
+        mostrarAviso({
+            titulo: "Falta seleccionar una opción",
+            mensaje: `El producto "${itemSinSeleccionObligatoria.name}" requiere que selecciones una opción antes de enviar el pedido.`,
+            tipo: "warning",
+            textoBoton: "Entendido"
+        });
+        return;
+    }
+
     if (typeof estaLocalAbierto === 'function' && !estaLocalAbierto()) {
-        alert("El local está cerrado. Vas a poder enviar el pedido cuando abramos.");
+        mostrarAviso({
+            titulo: "Local cerrado",
+            mensaje: "El local está cerrado. Vas a poder enviar el pedido cuando abramos.",
+            tipo: "info",
+            textoBoton: "Entendido"
+        });
         return;
     }
 
@@ -858,28 +887,53 @@ const checkout = () => {
     const details = detailsEl ? detailsEl.value.trim() : '';
 
     if (!name) {
-        alert("Por favor, ingresá tu nombre.");
+        mostrarAviso({
+            titulo: "Falta tu nombre",
+            mensaje: "Por favor, ingresá tu nombre para poder enviar el pedido.",
+            tipo: "warning",
+            textoBoton: "Entendido"
+        });
         return;
     }
 
     if (!deliveryType) {
-        alert("Por favor, seleccioná un método de entrega.");
+        mostrarAviso({
+            titulo: "Falta método de entrega",
+            mensaje: "Por favor, seleccioná si querés retirar, envío a domicilio o pedir en mesa.",
+            tipo: "warning",
+            textoBoton: "Entendido"
+        });
         return;
     }
 
     if (!paymentType) {
-        alert("Por favor, seleccioná una forma de pago.");
+        mostrarAviso({
+            titulo: "Falta forma de pago",
+            mensaje: "Por favor, seleccioná una forma de pago para continuar.",
+            tipo: "warning",
+            textoBoton: "Entendido"
+        });
         return;
     }
 
     if (deliveryType === 'envio') {
         if (!address) {
-            alert("Por favor, ingresá tu dirección de envío.");
+            mostrarAviso({
+                titulo: "Falta la dirección",
+                mensaje: "Por favor, ingresá tu dirección de envío para calcular el costo.",
+                tipo: "warning",
+                textoBoton: "Entendido"
+            });
             return;
         }
 
         if (!window.shippingInfo || !window.shippingInfo.isValid) {
-            alert("No se pudo calcular el envío o la dirección está fuera de zona.");
+            mostrarAviso({
+                titulo: "No se pudo calcular el envío",
+                mensaje: "Revisá la dirección ingresada o verificá que esté dentro de la zona de entrega.",
+                tipo: "warning",
+                textoBoton: "Entendido"
+            });
             return;
         }
     }
@@ -996,11 +1050,18 @@ const checkout = () => {
 };
 
 const cancelOrder = () => {
-    if (confirm('¿Estás seguro que querés cancelar el pedido?')) {
-        localStorage.removeItem('pancheria_cart');
-        sessionStorage.removeItem('checkout_data');
-        window.location.href = 'index.html';
-    }
+    mostrarConfirmacion({
+        titulo: "Cancelar pedido",
+        mensaje: "¿Estás seguro de que querés cancelar el pedido? Se va a borrar todo el carrito.",
+        tipo: "error",
+        textoCancelar: "Volver",
+        textoConfirmar: "Sí, cancelar",
+        onConfirmar: () => {
+            localStorage.removeItem('pancheria_cart');
+            sessionStorage.removeItem('checkout_data');
+            window.location.href = 'index.html';
+        }
+    });
 };
 
 // =============================
