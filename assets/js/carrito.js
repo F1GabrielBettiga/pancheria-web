@@ -123,15 +123,28 @@ const agregarOActualizarProducto = (producto, cambio, extrasSeleccionados = [], 
 
     } else {
 
+        const cartId = generarCartId(producto, [], []);
+
         const itemExistente = carrito.find(item =>
-            item.id === producto.id &&
-            (!item.extras || item.extras.length === 0) &&
-            (!item.sinIngredientes || item.sinIngredientes.length === 0)
+            item.cartId === cartId ||
+            (
+                item.id === producto.id &&
+                (!item.extras || item.extras.length === 0) &&
+                (!item.sinIngredientes || item.sinIngredientes.length === 0)
+            )
         );
 
         if (itemExistente) {
 
             itemExistente.quantity += cambio;
+
+            if (!itemExistente.cartId) {
+                itemExistente.cartId = cartId;
+            }
+
+            if (!itemExistente.basePrice) {
+                itemExistente.basePrice = producto.precio;
+            }
 
             if (itemExistente.quantity <= 0) {
                 carrito = carrito.filter(item => item !== itemExistente);
@@ -140,9 +153,11 @@ const agregarOActualizarProducto = (producto, cambio, extrasSeleccionados = [], 
         } else if (cambio > 0) {
 
             carrito.push({
+                cartId: cartId,
                 id: producto.id,
                 name: producto.nombre,
                 price: producto.precio,
+                basePrice: producto.precio,
                 image: producto.imagen,
                 quantity: 1,
                 extras: [],
@@ -157,7 +172,14 @@ const agregarOActualizarProducto = (producto, cambio, extrasSeleccionados = [], 
 const manejarModificarClick = (cartId) => {
     cargarCarrito();
 
-    const item = carrito.find(i => i.cartId === cartId);
+    const item = carrito.find(i =>
+        i.cartId === cartId ||
+        (
+            i.id === cartId &&
+            (!i.extras || i.extras.length === 0) &&
+            (!i.sinIngredientes || i.sinIngredientes.length === 0)
+        )
+    );
 
     if (!item) return;
 
@@ -165,7 +187,21 @@ const manejarModificarClick = (cartId) => {
 
     if (!productoBase) return;
 
-    window.cartItemToReplace = cartId;
+    const tienePersonalizacion =
+        (productoBase.extras && productoBase.extras.length > 0) ||
+        (productoBase.ingredientesRemovibles && productoBase.ingredientesRemovibles.length > 0);
+
+    if (!tienePersonalizacion) {
+        mostrarAviso({
+            titulo: "Sin opciones para modificar",
+            mensaje: "Este producto no tiene extras ni ingredientes configurados para editar.",
+            tipo: "info",
+            textoBoton: "Entendido"
+        });
+        return;
+    }
+
+    window.cartItemToReplace = item.cartId || item.id;
 
     abrirModalExtras(
         productoBase,
@@ -758,11 +794,20 @@ const renderCart = () => {
             </div>`
             : '';
 
-        const botonModificar = item.cartId
-            ? `<button onclick="manejarModificarClick('${item.cartId}')" class="mt-2 text-xs font-bold text-primary flex items-center gap-1 hover:underline">
-                    <span class="material-symbols-outlined text-[16px]">edit</span>
-                    Modificar
-                </button>`
+        const productoBase = productos.find(p => p.id === item.id);
+
+        const tienePersonalizacion =
+            productoBase &&
+            (
+                (productoBase.extras && productoBase.extras.length > 0) ||
+                (productoBase.ingredientesRemovibles && productoBase.ingredientesRemovibles.length > 0)
+            );
+
+        const botonModificar = tienePersonalizacion
+            ? `<button onclick="manejarModificarClick('${idParaFunciones}')" class="mt-2 text-xs font-bold text-primary flex items-center gap-1 hover:underline">
+            <span class="material-symbols-outlined text-[16px]">edit</span>
+            Modificar
+        </button>`
             : '';
 
         return `

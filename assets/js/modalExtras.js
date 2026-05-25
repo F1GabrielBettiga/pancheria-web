@@ -215,7 +215,6 @@ const confirmarExtras = () => {
         }
     });
 
-
     if (productoActualParaExtras.requiereSeleccion && extrasParaCarrito.length === 0) {
         mostrarAviso({
             titulo: "Falta seleccionar una opción",
@@ -226,18 +225,83 @@ const confirmarExtras = () => {
         return;
     }
 
+    
     if (window.cartItemToReplace) {
-        const itemExistente = carrito.find(i => i.cartId === window.cartItemToReplace);
+        const itemIndex = carrito.findIndex(item =>
+            item.cartId === window.cartItemToReplace ||
+            (
+                item.id === window.cartItemToReplace &&
+                (!item.extras || item.extras.length === 0) &&
+                (!item.sinIngredientes || item.sinIngredientes.length === 0)
+            )
+        );
 
-        if (itemExistente) {
-            itemExistente.quantity -= 1;
+        if (itemIndex > -1) {
+            const itemExistente = carrito[itemIndex];
 
-            if (itemExistente.quantity <= 0) {
-                carrito = carrito.filter(item => item.cartId !== window.cartItemToReplace);
+            const nuevoCartId = generarCartId(
+                productoActualParaExtras,
+                extrasParaCarrito,
+                ingredientesQuitados
+            );
+
+            const precioExtras = extrasParaCarrito.reduce((sum, e) =>
+                sum + (e.precio * e.cantidad), 0
+            );
+
+            const nuevoItem = {
+                cartId: nuevoCartId,
+                id: productoActualParaExtras.id,
+                name: productoActualParaExtras.nombre,
+                price: productoActualParaExtras.precio + precioExtras,
+                basePrice: productoActualParaExtras.precio,
+                image: productoActualParaExtras.imagen,
+                quantity: 1,
+                extras: extrasParaCarrito,
+                sinIngredientes: [...ingredientesQuitados]
+            };
+
+            const cartIdActual = itemExistente.cartId || generarCartId(
+                productoActualParaExtras,
+                itemExistente.extras || [],
+                itemExistente.sinIngredientes || []
+            );
+
+            if (cartIdActual === nuevoCartId) {
+                
+                itemExistente.cartId = nuevoCartId;
+                itemExistente.basePrice = productoActualParaExtras.precio;
+                itemExistente.extras = extrasParaCarrito;
+                itemExistente.sinIngredientes = [...ingredientesQuitados];
+                itemExistente.price = productoActualParaExtras.precio + precioExtras;
+            } else if (itemExistente.quantity > 1) {
+                
+                itemExistente.quantity -= 1;
+                carrito.splice(itemIndex, 0, nuevoItem);
+            } else {
+                
+                carrito.splice(itemIndex, 1, nuevoItem);
             }
         }
 
         window.cartItemToReplace = null;
+
+        guardarCarrito();
+        cerrarModalExtras();
+
+        if (document.getElementById('cart-items') && typeof renderCart === 'function') {
+            renderCart();
+        }
+
+        if (typeof actualizarInterfaz === 'function') {
+            actualizarInterfaz();
+        }
+
+        if (typeof mostrarToast === 'function') {
+            mostrarToast('Producto modificado');
+        }
+
+        return;
     }
 
     agregarOActualizarProducto(productoActualParaExtras, 1, extrasParaCarrito, ingredientesQuitados);
