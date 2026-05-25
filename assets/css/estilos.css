@@ -178,3 +178,85 @@ body {
         background-color: #0f1112;
     }
 }
+
+/* Checkbox personalizado para "Sin ingredientes" */
+.checkbox-sin-ingrediente {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border-radius: 6px;
+    border: 2px solid #94a3b8;
+    background-color: #ffffff;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    outline: none;
+    box-shadow: none;
+    color: #ffffff;
+    forced-color-adjust: none;
+}
+
+.checkbox-sin-ingrediente:hover {
+    border-color: #dc2626;
+}
+
+.checkbox-sin-ingrediente:focus,
+.checkbox-sin-ingrediente:active {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+}
+
+.checkbox-sin-ingrediente:checked,
+.checkbox-sin-ingrediente:checked:focus,
+.checkbox-sin-ingrediente:checked:active {
+    background-color: #dc2626 !important;
+    border-color: #dc2626 !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.18);
+}
+
+.checkbox-sin-ingrediente:checked::after,
+.checkbox-sin-ingrediente:checked:focus::after,
+.checkbox-sin-ingrediente:checked:active::after {
+    content: "✓";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff !important;
+    font-size: 16px;
+    font-weight: 900;
+    line-height: 1;
+}
+
+/* Modo noche */
+.dark .checkbox-sin-ingrediente {
+    background-color: #111827;
+    border-color: #64748b;
+}
+
+.dark .checkbox-sin-ingrediente:hover {
+    border-color: #ef4444;
+}
+
+.dark .checkbox-sin-ingrediente:focus,
+.dark .checkbox-sin-ingrediente:active {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.dark .checkbox-sin-ingrediente:checked,
+.dark .checkbox-sin-ingrediente:checked:focus,
+.dark .checkbox-sin-ingrediente:checked:active {
+    background-color: #ef4444 !important;
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.25);
+}
+
+.dark .checkbox-sin-ingrediente:checked::after,
+.dark .checkbox-sin-ingrediente:checked:focus::after,
+.dark .checkbox-sin-ingrediente:checked:active::after {
+    color: #ffffff !important;
+}

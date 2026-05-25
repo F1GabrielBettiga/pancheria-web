@@ -30,18 +30,18 @@ const abrirModalExtras = (producto, extrasPrevios = [], ingredientesQuitadosPrev
 
                 <div class="space-y-3">
                     ${ingredientesRemovibles.map(ingrediente => `
-                        <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 cursor-pointer transition-all">
-                            <span class="font-semibold text-slate-700 dark:text-slate-300">
-                                Sin ${ingrediente}
-                            </span>
+                    <label class="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 cursor-pointer transition-all hover:border-primary/50 dark:hover:border-primary/60">
+                         <span class="font-semibold text-slate-700 dark:text-slate-200">
+                         Sin ${ingrediente}
+                         </span>
 
-                            <input 
-                                type="checkbox"
-                                class="w-5 h-5 accent-red-600"
-                                onchange="toggleIngrediente('${ingrediente}', this.checked)"
-                                ${ingredientesQuitados.includes(ingrediente) ? 'checked' : ''}
-                            >
-                        </label>
+                         <input 
+                          type="checkbox"
+                         class="checkbox-sin-ingrediente"
+                          onchange="toggleIngrediente('${ingrediente}', this.checked)"
+                          ${ingredientesQuitados.includes(ingrediente) ? 'checked' : ''}
+                           >
+                    </label>
                     `).join('')}
                 </div>
             </div>
