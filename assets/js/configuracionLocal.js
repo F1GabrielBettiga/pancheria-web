@@ -197,10 +197,11 @@ const configuracionLocal = {
     direccion: {
 
         // Texto visible
-        texto: "Av. Corrientes 1234, CABA",
+        texto: "Chile 1198-1100,El Talar, Provincia de Buenos Aires",
 
         // Link del mapa embebido
-        mapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3289.6408314177384!2d-58.62715505966118!3d-34.461264165166256!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bca493a4889567%3A0xdebec819e5607d07!2sOlegario%20Victor%20Andrade%20433%2C%20B1617%20Gral.%20Pacheco%2C%20Provincia%20 de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1778722309573!5m2!1ses-419!2sar"
+        mapsEmbedUrl: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d822.3476184411313!2d-58.650093730350264!3d-34.46761739831268!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bca363baa3114d%3A0x35df5b6405aff4cd!2sChile%201198-1100%2C%20B1618DCV%20El%20Talar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1779749761346!5m2!1ses-419!2sar",
+
     },
 
     // =============================

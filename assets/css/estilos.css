@@ -9,7 +9,6 @@
 
 body {
     transition: background-color 0.3s ease, color 0.3s ease;
-    /* Usar svh (Short Viewport Height) para asegurar que el cuerpo respete las barras del navegador */
     min-height: 100svh;
 }
 

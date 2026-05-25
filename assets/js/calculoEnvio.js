@@ -32,7 +32,7 @@ const initMap = () => {
 
     // Marcador del local (fijo)
     const localIcon = L.icon({
-        iconUrl: 'assets/img/local-marker.png',
+        iconUrl: 'assets/img/logo.png',
 
         iconSize: [42, 42],
         iconAnchor: [21, 42],

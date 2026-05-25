@@ -190,7 +190,9 @@ const actualizarTotalModal = () => {
 
     const extrasProducto = productoActualParaExtras.extras || [];
 
-    let total = productoActualParaExtras.precio;
+    let total = productoActualParaExtras.precioDesdeExtras
+        ? 0
+        : productoActualParaExtras.precio;
 
     extrasProducto.forEach(extra => {
         total += extra.precio * (extrasSeleccionados[extra.id] || 0);
@@ -225,7 +227,18 @@ const confirmarExtras = () => {
         return;
     }
 
-    
+    const precioExtras = extrasParaCarrito.reduce((sum, e) =>
+        sum + (e.precio * e.cantidad), 0
+    );
+
+    const precioFinal = productoActualParaExtras.precioDesdeExtras
+        ? precioExtras
+        : productoActualParaExtras.precio + precioExtras;
+
+    const precioBase = productoActualParaExtras.precioDesdeExtras
+        ? 0
+        : productoActualParaExtras.precio;
+
     if (window.cartItemToReplace) {
         const itemIndex = carrito.findIndex(item =>
             item.cartId === window.cartItemToReplace ||
@@ -245,16 +258,12 @@ const confirmarExtras = () => {
                 ingredientesQuitados
             );
 
-            const precioExtras = extrasParaCarrito.reduce((sum, e) =>
-                sum + (e.precio * e.cantidad), 0
-            );
-
             const nuevoItem = {
                 cartId: nuevoCartId,
                 id: productoActualParaExtras.id,
                 name: productoActualParaExtras.nombre,
-                price: productoActualParaExtras.precio + precioExtras,
-                basePrice: productoActualParaExtras.precio,
+                price: precioFinal,
+                basePrice: precioBase,
                 image: productoActualParaExtras.imagen,
                 quantity: 1,
                 extras: extrasParaCarrito,
@@ -268,18 +277,15 @@ const confirmarExtras = () => {
             );
 
             if (cartIdActual === nuevoCartId) {
-                
                 itemExistente.cartId = nuevoCartId;
-                itemExistente.basePrice = productoActualParaExtras.precio;
+                itemExistente.basePrice = precioBase;
                 itemExistente.extras = extrasParaCarrito;
                 itemExistente.sinIngredientes = [...ingredientesQuitados];
-                itemExistente.price = productoActualParaExtras.precio + precioExtras;
+                itemExistente.price = precioFinal;
             } else if (itemExistente.quantity > 1) {
-                
                 itemExistente.quantity -= 1;
                 carrito.splice(itemIndex, 0, nuevoItem);
             } else {
-                
                 carrito.splice(itemIndex, 1, nuevoItem);
             }
         }

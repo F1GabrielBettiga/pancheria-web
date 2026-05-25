@@ -108,12 +108,20 @@ const agregarOActualizarProducto = (producto, cambio, extrasSeleccionados = [], 
                 sum + (e.precio * e.cantidad), 0
             );
 
+            const precioFinal = producto.precioDesdeExtras
+                ? precioExtras
+                : producto.precio + precioExtras;
+
+            const precioBase = producto.precioDesdeExtras
+                ? 0
+                : producto.precio;
+
             carrito.push({
                 cartId: cartId,
                 id: producto.id,
                 name: producto.nombre,
-                price: producto.precio + precioExtras,
-                basePrice: producto.precio,
+                price: precioFinal,
+                basePrice: precioBase,
                 image: producto.imagen,
                 quantity: 1,
                 extras: extrasSeleccionados,
@@ -142,9 +150,13 @@ const agregarOActualizarProducto = (producto, cambio, extrasSeleccionados = [], 
                 itemExistente.cartId = cartId;
             }
 
-            if (!itemExistente.basePrice) {
-                itemExistente.basePrice = producto.precio;
-            }
+            itemExistente.basePrice = producto.precioDesdeExtras
+                ? 0
+                : producto.precio;
+
+            itemExistente.price = producto.precioDesdeExtras
+                ? 0
+                : producto.precio;
 
             if (itemExistente.quantity <= 0) {
                 carrito = carrito.filter(item => item !== itemExistente);
@@ -152,12 +164,20 @@ const agregarOActualizarProducto = (producto, cambio, extrasSeleccionados = [], 
 
         } else if (cambio > 0) {
 
+            const precioBase = producto.precioDesdeExtras
+                ? 0
+                : producto.precio;
+
+            const precioFinal = producto.precioDesdeExtras
+                ? 0
+                : producto.precio;
+
             carrito.push({
                 cartId: cartId,
                 id: producto.id,
                 name: producto.nombre,
-                price: producto.precio,
-                basePrice: producto.precio,
+                price: precioFinal,
+                basePrice: precioBase,
                 image: producto.imagen,
                 quantity: 1,
                 extras: [],
